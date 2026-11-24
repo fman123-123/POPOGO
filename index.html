@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>爻卦分析 · 搖卦排盤</title>
+  <meta name="description" content="線上搖銅錢排卦:本卦、互卦、變卦、動爻解讀。純前端,資料不上傳。">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <h1>爻卦分析</h1>
+    <p class="sub">靜心起一事,搖六爻成卦 · 純前端運作,不上傳任何資料</p>
+  </header>
+
+  <main>
+    <section class="card" id="input">
+      <label for="question">所問之事(選填,僅存在你的瀏覽器)</label>
+      <input id="question" type="text" maxlength="80" placeholder="例如:這份新工作是否適合我?">
+
+      <div class="tabs" role="tablist">
+        <button class="tab active" role="tab" data-mode="coin" aria-selected="true">搖銅錢</button>
+        <button class="tab" role="tab" data-mode="manual" aria-selected="false">手動排卦</button>
+      </div>
+
+      <div id="mode-coin" class="mode">
+        <p class="hint">心中默念所問之事,按下按鈕,由初爻至上爻依序擲三枚銅錢。</p>
+        <div class="coins" id="coins" aria-live="polite">
+          <span class="coin">?</span><span class="coin">?</span><span class="coin">?</span>
+        </div>
+        <div class="row">
+          <button id="btn-all" class="primary">搖出六爻</button>
+          <button id="btn-step" class="ghost">逐爻搖(<span id="step-n">1</span>/6)</button>
+        </div>
+      </div>
+
+      <div id="mode-manual" class="mode" hidden>
+        <p class="hint">已有卦象時,逐爻選擇(由初爻到上爻)。</p>
+        <div id="manual-rows"></div>
+        <div class="row">
+          <button id="btn-manual" class="primary">排卦</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="live" hidden>
+      <h2>起卦過程</h2>
+      <div id="live-lines" class="live-lines"></div>
+    </section>
+
+    <section id="result" hidden>
+      <div class="card">
+        <p class="qline" id="r-question"></p>
+        <div class="trio" id="r-trio"></div>
+        <p class="legend">○ 老陽(動)　× 老陰(動)　動爻以朱紅標示</p>
+      </div>
+
+      <div class="card" id="r-guide"></div>
+      <div class="card" id="r-main"></div>
+      <div class="card" id="r-changed" hidden></div>
+      <div class="card" id="r-lines"></div>
+      <div class="card" id="r-extra"></div>
+
+      <div class="row center">
+        <button id="btn-copy" class="ghost">複製結果</button>
+        <button id="btn-again" class="primary">重新起卦</button>
+      </div>
+      <p class="toast" id="toast" role="status"></p>
+    </section>
+
+    <section class="card" id="history-card" hidden>
+      <div class="row between">
+        <h2>最近紀錄</h2>
+        <button id="btn-clear" class="link">清除</button>
+      </div>
+      <ul id="history"></ul>
+    </section>
+
+    <section class="card note">
+      <h2>使用說明</h2>
+      <ul>
+        <li>每爻擲三枚銅錢:正面算 3、反面算 2,合計 6 老陰(動)、7 少陽、8 少陰、9 老陽(動)。</li>
+        <li>爻由下往上排:初爻在最下,上爻在最上。</li>
+        <li>互卦取二至四爻與三至五爻;錯卦為陰陽全反,綜卦為上下顛倒。</li>
+        <li>動爻判讀依朱熹《易學啟蒙》的動爻數取斷法,解讀文字為白話簡述,並非原典爻辭。</li>
+        <li>本站僅供文化學習與自我反思,重大決定請以事實與專業意見為準。</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>爻卦分析 · 靜態網頁 · 無後台</footer>
+
+  <script src="iching.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
