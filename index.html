@@ -15,8 +15,9 @@
 
   <main>
     <section class="card" id="input">
-      <label for="question">所問之事(選填,僅存在你的瀏覽器)</label>
-      <input id="question" type="text" maxlength="80" placeholder="例如:這份新工作是否適合我?">
+      <div class="field-label" id="topic-label">所問何事(選填)</div>
+      <div class="chips" id="topics" role="radiogroup" aria-labelledby="topic-label"></div>
+      <p class="topic-desc" id="topic-desc"></p>
 
       <div class="tabs" role="tablist">
         <button class="tab active" role="tab" data-mode="coin" aria-selected="true">搖銅錢</button>

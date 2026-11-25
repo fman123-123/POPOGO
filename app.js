@@ -6,6 +6,45 @@
 
   let stepValues = [];   // 逐爻模式累積的爻值
   let busy = false;
+  let currentTopic = ""; // 目前選擇的所問事項
+
+  /* ---------- 所問事項 ---------- */
+  const TOPICS = [
+    ["感情", "戀愛、婚姻、關係的走向與相處。看彼此的態度與互動是否順暢。"],
+    ["事業", "工作、職涯、創業與職場人際。看時機、位置與進退。"],
+    ["家人", "親子、手足、家庭氛圍與長輩晚輩。看相處之道與責任分配。"],
+    ["健康", "身心狀態與調養。僅作自我覺察,不能取代醫師診斷。"],
+    ["財運", "收入、投資、開銷與資源。看取捨與風險,不作投資建議。"],
+    ["學業", "考試、進修、學習方向。看準備程度與方法。"],
+    ["人際", "朋友、合作對象、同事與貴人小人。看相處與界線。"],
+    ["其他", "不屬於以上類別的事情,以整體局勢為主。"]
+  ];
+
+  function selectTopic(name) {
+    currentTopic = TOPICS.some(t => t[0] === name) ? name : "";
+    document.querySelectorAll("#topics .chip").forEach(b => {
+      const on = b.dataset.topic === currentTopic;
+      b.classList.toggle("active", on);
+      b.setAttribute("aria-checked", on);
+    });
+    const t = TOPICS.find(x => x[0] === currentTopic);
+    $("topic-desc").textContent = t ? t[1] : "點選一項,讓斷卦重點更貼近你的問題。";
+  }
+
+  function buildTopics() {
+    const wrap = $("topics");
+    TOPICS.forEach(t => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip";
+      b.dataset.topic = t[0];
+      b.setAttribute("role", "radio");
+      b.textContent = t[0];
+      b.addEventListener("click", () => selectTopic(currentTopic === t[0] ? "" : t[0]));
+      wrap.appendChild(b);
+    });
+    selectTopic("");
+  }
 
   /* ---------- 繪圖 ---------- */
   function hexHTML(bits, kinds, showMarks) {
@@ -45,7 +84,8 @@
       "<h2>斷卦重點</h2>" +
       '<span class="badge">' + (res.moving.length ? res.moving.length + " 爻動" : "靜卦") + "</span>" +
       '<span class="badge">' + g.rule + "</span>" +
-      '<div class="focus">' + g.focus + "</div><p>" + g.detail + "</p>";
+      '<div class="focus">' + g.focus + "</div><p>" + g.detail + "</p>" +
+      (topicNote(question));
 
     $("r-main").innerHTML =
       "<h2>本卦 · " + res.main.name + "</h2>" +
@@ -86,6 +126,11 @@
       "</div>";
 
     $("result").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function topicNote(question) {
+    const t = TOPICS.find(x => x[0] === question);
+    return t ? "<p class='hint'>就「" + t[0] + "」而言:" + t[1] + "請以上述卦象的處境與建議對照自身狀況。</p>" : "";
   }
 
   function resultText(res, question) {
@@ -163,7 +208,7 @@
   }
 
   function finish(values) {
-    const q = $("question").value.trim();
+    const q = currentTopic;
     const res = IC.analyze(values);
     render(res, q);
     saveHistory(values, q, res);
@@ -225,7 +270,7 @@
       const btn = document.createElement("button");
       btn.textContent = "查看";
       btn.addEventListener("click", () => {
-        $("question").value = h.q || "";
+        selectTopic(h.q || "");
         $("live").hidden = true;
         render(IC.analyze(h.v), h.q || "");
       });
@@ -265,6 +310,7 @@
   }
 
   function init() {
+    buildTopics();
     buildManual();
     renderHistory();
     $("btn-all").addEventListener("click", castAll);
@@ -274,7 +320,7 @@
     $("btn-again").addEventListener("click", () => {
       $("result").hidden = true; $("live").hidden = true;
       stepValues = []; $("step-n").textContent = 1;
-      $("question").value = "";
+      selectTopic("");
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
     $("btn-clear").addEventListener("click", () => { storeHistory([]); renderHistory(); });

@@ -35,6 +35,15 @@ input[type=text] {
 }
 input:focus, button:focus-visible, select:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
+.field-label { margin-bottom: 8px; color: var(--muted); font-size: .9rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  padding: 7px 16px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--panel-2); color: var(--text); font: inherit; cursor: pointer;
+}
+.chip.active { background: var(--gold); color: #1b1408; border-color: var(--gold); font-weight: 700; }
+.topic-desc { margin: 10px 0 0; min-height: 1.7em; color: var(--muted); font-size: .85rem; }
+
 .tabs { display: flex; gap: 8px; margin: 16px 0 10px; }
 .tab {
   flex: 1; padding: 9px; border-radius: 10px; border: 1px solid var(--line);
