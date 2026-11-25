@@ -28,7 +28,7 @@
       b.setAttribute("aria-checked", on);
     });
     const t = TOPICS.find(x => x[0] === currentTopic);
-    $("topic-desc").textContent = t ? t[1] : "點選一項,讓斷卦重點更貼近你的問題。";
+    $("topic-desc").textContent = t ? t[1] : "";
   }
 
   function buildTopics() {
@@ -128,8 +128,26 @@
     $("result").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
+  // 所問 = 類別 + 自由輸入(以「:」連接);兩者皆為選填
+  function buildQuestion() {
+    const free = $("free-q").value.trim();
+    if (currentTopic && free) return currentTopic + ":" + free;
+    return free || currentTopic;
+  }
+
+  function splitQuestion(q) {
+    const t = TOPICS.find(x => q === x[0] || q.startsWith(x[0] + ":"));
+    return t ? [t[0], q.slice(t[0].length + 1)] : ["", q];
+  }
+
+  function setQuestion(q) {
+    const parts = splitQuestion(q);
+    selectTopic(parts[0]);
+    $("free-q").value = parts[1];
+  }
+
   function topicNote(question) {
-    const t = TOPICS.find(x => x[0] === question);
+    const t = TOPICS.find(x => x[0] === splitQuestion(question || "")[0]);
     return t ? "<p class='hint'>就「" + t[0] + "」而言:" + t[1] + "請以上述卦象的處境與建議對照自身狀況。</p>" : "";
   }
 
@@ -208,7 +226,7 @@
   }
 
   function finish(values) {
-    const q = currentTopic;
+    const q = buildQuestion();
     const res = IC.analyze(values);
     render(res, q);
     saveHistory(values, q, res);
@@ -270,7 +288,7 @@
       const btn = document.createElement("button");
       btn.textContent = "查看";
       btn.addEventListener("click", () => {
-        selectTopic(h.q || "");
+        setQuestion(h.q || "");
         $("live").hidden = true;
         render(IC.analyze(h.v), h.q || "");
       });
@@ -320,7 +338,7 @@
     $("btn-again").addEventListener("click", () => {
       $("result").hidden = true; $("live").hidden = true;
       stepValues = []; $("step-n").textContent = 1;
-      selectTopic("");
+      setQuestion("");
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
     $("btn-clear").addEventListener("click", () => { storeHistory([]); renderHistory(); });
